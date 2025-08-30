@@ -1,14 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const applicationsController = require('../controller/applicationController');
-const verifyJWT = require('../middleware/verifyJWT');
+const express = require('express')
+const router = express.Router()
+const applicationsController = require('../controller/applicationController')
+const verifyJWT = require('../middleware/verifyJWT')
 const authorizeRole = require('../middleware/authorizeRole');
-const upload = require('../middleware/uploads');
-const jobsController = require('../controller/jobsController');
+const upload = require("../middleware/uploads");
+const jobsController= require("../controller/jobsController")
 
-// All routes require authentication
-router.use(verifyJWT);
-
+router.use(verifyJWT)
 /**
  * @swagger
  * /applications:
@@ -31,7 +29,7 @@ router.use(verifyJWT);
  *       201:
  *         description: Job application submitted successfully
  */
-router.post('/', upload.single('resume'), authorizeRole(['Developer']), applicationsController.applyJob);
+router.post('/', upload.single("resume"), authorizeRole(['Developer']), applicationsController.applyJob);
 
 /**
  * @swagger
@@ -56,7 +54,7 @@ router.get('/user/:userId', authorizeRole(['Developer']), applicationsController
 
 /**
  * @swagger
- * /applications/employer/{employerId}:
+ * /applications/employer/{id}:
  *   get:
  *     summary: Get all applications for an employer
  *     tags: [Applications]
@@ -64,7 +62,7 @@ router.get('/user/:userId', authorizeRole(['Developer']), applicationsController
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: employerId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
@@ -73,11 +71,11 @@ router.get('/user/:userId', authorizeRole(['Developer']), applicationsController
  *       200:
  *         description: List of applications for the employer
  */
-router.get('/employer/:employerId', authorizeRole(['employer']), jobsController.getEmployerApplications);
+router.get('/employer/:id', authorizeRole(['employer']), jobsController.getEmployerApplications);
 
 /**
  * @swagger
- * /applications/{applicationId}:
+ * /applications/{id}:
  *   get:
  *     summary: Get details of a specific application
  *     tags: [Applications]
@@ -85,7 +83,7 @@ router.get('/employer/:employerId', authorizeRole(['employer']), jobsController.
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: applicationId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
@@ -94,7 +92,7 @@ router.get('/employer/:employerId', authorizeRole(['employer']), jobsController.
  *       200:
  *         description: Application details
  */
-router.get('/:applicationId', applicationsController.getApplicationDetails);
+router.get('/:id', applicationsController.getApplicationDetails);
 
 /**
  * @swagger
@@ -115,19 +113,19 @@ router.get('/:applicationId', applicationsController.getApplicationDetails);
  *       200:
  *         description: List of applications for the job
  */
-router.get('/job/:jobId', authorizeRole(['employer']), applicationsController.getJobApplications);
+router.get('/job/:jobId', authorizeRole('employer'), applicationsController.getJobApplications);
 
 /**
  * @swagger
- * /applications/{applicationId}:
+ * /applications/{id}:
  *   patch:
- *     summary: Update application status (e.g., approved, shortlisted, rejected)
+ *     summary: Update application status (e.g., Approved, Shortlisted, Rejected)
  *     tags: [Applications]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: applicationId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
@@ -146,6 +144,6 @@ router.get('/job/:jobId', authorizeRole(['employer']), applicationsController.ge
  *       200:
  *         description: Application status updated successfully
  */
-router.patch('/:applicationId', authorizeRole(['employer']), applicationsController.updateApplicationStatus);
+router.patch('/:id', authorizeRole(['employer']), applicationsController.updateApplicationStatus);
 
 module.exports = router;
